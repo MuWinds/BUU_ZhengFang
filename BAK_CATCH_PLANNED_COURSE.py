@@ -220,7 +220,7 @@ class PlannedCourse:
             detail = []
             url = "http://" + LOGIN.ZUCC.DOMAIN + tmp[0].find(name="a")["onclick"][21:-8]
             header = LOGIN.ZUCC.InitHeader
-            header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh="+self.account.account_data['username']
+            header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh="+self.account.account_data['username']
             time.sleep(4)
             item_response = self.account.session.get(url=url, headers=header)
             item_soup = BeautifulSoup(item_response.text, "lxml")
@@ -267,7 +267,7 @@ class PlannedCourse:
             url = "http://" + LOGIN.ZUCC.DOMAIN + "/clsPage/xsxjs.aspx?" + "xkkh=" + \
                   tmp[0].find(name="a")["onclick"].split("=")[1][0:-3] + "&xh=" + self.account.account_data["username"]
             header = LOGIN.ZUCC.InitHeader
-            header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
+            header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=31901040"
             time.sleep(4)
             # print(url)
             item_response = self.account.session.get(url=url, headers=header)
@@ -313,7 +313,7 @@ class PlannedCourse:
         x = int(course_xy[0])
         y = int(course_xy[1])
         header = LOGIN.ZUCC.InitHeader
-        header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
+        header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=31901040"
         response = self.account.session.get(url=self.english_course[x - 1].url, headers=header)
         # print(self.english_course[x - 1].url)
         self.account.soup = BeautifulSoup(response.text, "lxml")
@@ -340,7 +340,7 @@ class PlannedCourse:
         x = int(course_xy[0])
         y = int(course_xy[1])
         header = LOGIN.ZUCC.InitHeader
-        header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=31901040"
+        header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=31901040"
         response = self.account.session.get(url=self.professional_course[x - 1].url, headers=header)
         # print(self.professional_course[x - 1].url)
         # print(response.text)

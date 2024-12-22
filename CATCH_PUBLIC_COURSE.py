@@ -4,10 +4,10 @@ import MENU
 
 
 class info:
-    InitHeader = {"Host": "xk.zucc.edu.cn", "Connection": "keep-alive",
+    InitHeader = {"Host": "jwxt.buu.edu.cn", "Connection": "keep-alive",
                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"}
-    rules_page = "http://xk.zucc.edu.cn/sm_qxxxk.aspx"
-    public_course_page_main = "http://xk.zucc.edu.cn/xf_xsqxxxk.aspx"
+    rules_page = "https://jwxt.buu.edu.cn/sm_qxxxk.aspx"
+    public_course_page_main = "https://jwxt.buu.edu.cn/xf_xsqxxxk.aspx"
 
 
 class PublicCourse:

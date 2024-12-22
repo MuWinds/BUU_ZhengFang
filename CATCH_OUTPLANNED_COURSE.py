@@ -25,7 +25,7 @@ class OutPlannedCourse:
         self.account.soup = BeautifulSoup(response.text, "lxml")
 
     def choose_profession(self):
-        url = "http://xk.zucc.edu.cn/zylb.aspx?xh=" + self.account.account_data["username"]
+        url = "https://jwxt.buu.edu.cn/zylb.aspx?xh=" + self.account.account_data["username"]
         header = LOGIN.ZUCC.InitHeader
         header["Referer"] = LOGIN.ZUCC.xsmain + "?xh=" + self.account.account_data['username']
         response = self.account.session.post(url=url, headers=header)
@@ -94,7 +94,7 @@ class OutPlannedCourse:
         url = self.urls[int(n) - 1]
         self.obj_url = url
         header = LOGIN.ZUCC.InitHeader
-        header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
+        header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
         item_response = self.account.session.get(url=url, headers=header)
         # print(item_response.url)
         item_soup = BeautifulSoup(item_response.text, "lxml")

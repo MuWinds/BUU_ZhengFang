@@ -10,15 +10,15 @@ import rsa
 
 # zucc正方教务系统需要用到的一些网站连接以及初始化的抢课数据包
 class ZUCC:
-    DOMAIN = "xk.zucc.edu.cn"
-    MainURL = "http://xk.zucc.edu.cn/default2.aspx"
-    InitHeader = {"Host": "xk.zucc.edu.cn", "Connection": "keep-alive",
+    DOMAIN = "jwxt.buu.edu.cn"
+    MainURL = "https://jwxt.buu.edu.cn/default2.aspx"
+    InitHeader = {"Host": "jwxt.buu.edu.cn", "Connection": "keep-alive",
                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"}
-    CheckCodeURL = "http://xk.zucc.edu.cn"
+    CheckCodeURL = "https://jwxt.buu.edu.cn/"
     CheckCodeHeader = ""
-    PlanCourageURL = "http://xk.zucc.edu.cn/xsxk.aspx"
-    xsmain = "http://xk.zucc.edu.cn/xs_main.aspx?xh="
-    GetCodeKeyURL = "http://xk.zucc.edu.cn/ajaxRequest/Handler1.ashx"
+    PlanCourageURL = "https://jwxt.buu.edu.cn/xsxk.aspx"
+    xsmain = "https://jwxt.buu.edu.cn/xs_main.aspx?xh="
+    GetCodeKeyURL = "https://jwxt.buu.edu.cn/ajaxRequest/Handler1.ashx"
 
 
 # Account为登录用的账户
@@ -49,24 +49,20 @@ class Account:
         for img in imgs:
             if img.get("id") == "icode":
                 useimg = img.get("src")
-        image_response = self.session.get(ZUCC.CheckCodeURL + useimg, stream=True)
-
+                print(useimg)
+        print(self.session.cookies.get_dict())
+        #联大的登录需要带header和cookies
+        image_response = self.session.get(ZUCC.CheckCodeURL + useimg,cookies=self.session.cookies.get_dict(),headers=ZUCC.InitHeader, stream=True)
         image = image_response.content
         try:
-            with open(os.getcwd() + "/code.gif", "wb") as code_gif:
+            with open(os.getcwd() + "/code.jpg", "wb") as code_jpg:
                 img_dir = os.getcwd() + "/"
-                code_gif.write(image)
-            code_gif.close()
+                code_jpg.write(image)
+            code_jpg.close()
         except IOError:
             print("IO ERROR!")
         finally:
             return img_dir
-
-    def __get_check_code_human(self):
-        while self.POSTDate["txtSecretCode"] == "-1":
-            img_dir = self.__refresh_code()
-            os.startfile(img_dir + "code.gif")
-            self.POSTDate["txtSecretCode"] = input("Input checkCode(-1 to refresh):")
 
     def __get_check_code_ocr(self):
         img_dir = self.__refresh_code()
@@ -134,7 +130,6 @@ class Encrypt(object):
 
     def _pad_for_encryption(self, message, target_length):
         message = message[::-1]
-        max_msglength = target_length - 11
         msglength = len(message)
 
         padding = b''

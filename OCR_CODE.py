@@ -104,7 +104,7 @@ def single_char_ocr(image, models, file_names):
 
 
 def run(image_path, dir_now):
-    image = Image.open(image_path + "code.gif")
+    image = Image.open(image_path + "code.jpg")
     # show_code(image)
     image = stay_blue2gray(image)
     images = split_image(image)

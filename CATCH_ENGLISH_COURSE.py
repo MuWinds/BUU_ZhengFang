@@ -22,7 +22,7 @@ class EnglishCourse:
         url = self.urls[int(n) - 1]
         self.obj_url = url
         header = LOGIN.ZUCC.InitHeader
-        header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
+        header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
         item_response = self.account.session.get(url=url, headers=header)
         item_soup = BeautifulSoup(item_response.text, "lxml")
         self.obj_viewstate = item_soup.find_all(name='input', id="__VIEWSTATE")[0]["value"]

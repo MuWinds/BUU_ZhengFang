@@ -58,7 +58,7 @@ class PlannedCourse:
         for num, link in enumerate(links[1:-1]):
             tds = link.find_all("td")
             print("编号：" + str(num + 1) + "\t课程名称: " + tds[1].text)
-            url = "http://" + LOGIN.ZUCC.DOMAIN + "/clsPage/xsxjs.aspx?" + "xkkh=" + \
+            url = "https://" + LOGIN.ZUCC.DOMAIN + "/clsPage/xsxjs.aspx?" + "xkkh=" + \
                   tds[1].find("a").get("onclick").split("=")[1][0:-3] + "&xh=" + self.account.account_data["username"]
             # print(url)
             self.urls.append(url)
@@ -67,7 +67,7 @@ class PlannedCourse:
         url = self.urls[int(n) - 1]
         self.obj_url = url
         header = LOGIN.ZUCC.InitHeader
-        header["Referer"] = "http://xk.zucc.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
+        header["Referer"] = "https://jwxt.buu.edu.cn/xs_main.aspx?xh=" + self.account.account_data['username']
         item_response = self.account.session.get(url=url, headers=header)
         # print(BeautifulSoup(item_response.text, 'lxml'))
         item_soup = BeautifulSoup(item_response.text, "lxml")
