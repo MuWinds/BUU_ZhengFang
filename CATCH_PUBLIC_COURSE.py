@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import time
 import MENU
-
+import LOGIN
 
 class info:
     InitHeader = {"Host": "jwxt.buu.edu.cn", "Connection": "keep-alive",
@@ -82,6 +82,7 @@ class PublicCourse:
             return
         url = info.public_course_page_main + "?xh=" + self.account.account_data["username"]
         soup = BeautifulSoup(response.text, "lxml")
+        header = LOGIN.ZUCC.InitHeader
         POSTData = {
             "__EVENTTARGET": "dpkcmcGrid$txtPageSize",
             "__VIEWSTATE": soup.find("input", type="hidden", id="__VIEWSTATE").get("value"),
@@ -94,7 +95,7 @@ class PublicCourse:
         POSTData["kcmcGrid$ctl" + number.zfill(2) + "$jc"] = "on"
         while True:
             print("当前正在抢 " + self.course_list[int(number) - 2].name)
-            response = self.account.session.post(url=url, data=POSTData)
+            response = self.account.session.post(url=url,headers=header, data=POSTData)
             if self.num_of_selected_courses(response) == (self.num_of_selected + 1):
                 print("抢课成功！" + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))),flush=True)
                 self.num_of_selected += 1

@@ -50,7 +50,6 @@ class Account:
             if img.get("id") == "icode":
                 useimg = img.get("src")
                 print(useimg)
-        print(self.session.cookies.get_dict())
         #联大的登录需要带header和cookies
         image_response = self.session.get(ZUCC.CheckCodeURL + useimg,cookies=self.session.cookies.get_dict(),headers=ZUCC.InitHeader, stream=True)
         image = image_response.content

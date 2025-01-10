@@ -55,8 +55,10 @@ class EnglishCourse:
                      "xkkh": self.course_list[int(n) - 1].code,
                      "__VIEWSTATE": self.obj_viewstate,
                      "RadioButtonList1": 1}
+        header = LOGIN.ZUCC.InitHeader
+        header["Referer"] = self.obj_url
         while True:
-            response = self.account.session.post(url=self.obj_url, data=post_data)
+            response = self.account.session.post(url=self.obj_url,headers=header, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
             try:
                 reply = soup.find('script').string.split("'")[1]

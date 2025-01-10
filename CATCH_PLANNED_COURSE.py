@@ -1,7 +1,7 @@
 import LOGIN
 from bs4 import BeautifulSoup
 import time
-
+import re
 
 class PlannedCourse:
     def __init__(self, account):
@@ -37,18 +37,28 @@ class PlannedCourse:
             else:
                 break
         post_data = {"__EVENTTARGET": "Button1",
-                     "__EVENTARGUMENT": "",
                      "__VIEWSTATEGENERATOR": "55DF6E88",
                      "xkkh": self.course_list[int(n) - 1].code,
                      "__VIEWSTATE": self.obj_viewstate,
                      "RadioButtonList1": 0}
         while True:
-            response = self.account.session.post(url=self.obj_url, data=post_data)
+            header = LOGIN.ZUCC.InitHeader
+            header["Referer"] = self.obj_url
+            response = self.account.session.post(url=self.obj_url,headers=header, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
             try:
-                reply = soup.find('script').string.split("'")[1]
-            except BaseException:
-                reply = "未知错误或者已选上课程"
+                script_tags = soup.find_all('script')
+                for script in script_tags:
+                    if script.string:
+                        match = re.search(r"alert\('([^']+)'\);", script.string)
+                        if match:
+                            reply = match.group(1)
+            except AttributeError as e:
+                reply = "属性访问错误：" + str(e)
+            except ValueError as e:
+                reply = str(e)
+            except Exception as e:
+                reply = "其他未知错误：" + str(e)
             print(reply + "\t\t" + str(time.strftime('%m-%d-%H-%M-%S', time.localtime(time.time()))),flush=True)
             if reply == "选课成功！":
                 return

@@ -127,7 +127,8 @@ class OutPlannedCourse:
                      "RadioButtonList1": "1",
                      "xkkh": self.course_list[int(n) - 1].code,
                      "__VIEWSTATE": self.obj_viewstate}
-
+        header = LOGIN.ZUCC.InitHeader
+        header["Referer"] = self.obj_url
         while True:
             response = self.account.session.post(url=self.obj_url, data=post_data)
             soup = BeautifulSoup(response.text, "lxml")
