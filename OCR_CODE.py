@@ -1,117 +1,79 @@
 import os
-# 安装Pillow
+import numpy as np
 from PIL import Image
-# import matplotlib.pyplot as plt
-
-#
-# def show_code(image=None, path='.\\'):
-#     if sys.platform== "linux":
-#         path='./'
-#     if image:
-#         image = Image.open(path + "code.gif")
-#     plt.figure("CODE")
-#     plt.imshow(image)
-#     plt.show()
-#     return image
+from concurrent.futures import ThreadPoolExecutor
 
 
 def stay_blue2gray(image):
     image = image.convert('RGB')
-    height = image.size[0]
-    width = image.size[1]
-    for y in range(width):
-        for x in range(height):
-            pix_data = image.getpixel((x, y))
-            if pix_data[0] <= 40 and pix_data[1] <= 40 and pix_data[2] >= 65:
-                image.putpixel((x, y), (0, 0, 0))
-                continue
-            else:
-                image.putpixel((x, y), (255, 255, 255))
-    image = image.convert('L')
-    return image
+    img_array = np.array(image)
+    
+    # 优化的蓝色过滤，直接对所有像素进行批量操作
+    mask = (img_array[:, :, 0] <= 40) & (img_array[:, :, 1] <= 40) & (img_array[:, :, 2] >= 65)
+    img_array[mask] = [0, 0, 0]
+    img_array[~mask] = [255, 255, 255]
+    
+    return Image.fromarray(np.uint8(img_array)).convert('L')
 
 
 def split_image(image):
     images = []
-    x = 5
-    y = 0
-    w = 12
-    h = 23
+    x, y, w, h = 5, 0, 12, 23
     for i in range(4):
         images.append(image.crop((x, y, x + w, y + h)))
         x += w
-        # images[i].save(str(i) + '.gif')
     return images
 
 
-def ocr(images, dir_now):
-    result = ""
+def load_models(dir_now):
     models = []
     file_names = []
-    # 加载模型
-    try:
-        model_path = dir_now + r'zfgetcode\data\model'
-        for filename in os.listdir(model_path):
-            model = Image.open(model_path + "\\" + filename)
-            file_names.append(filename[0:1])
-            models.append(model.convert('L'))
-
-    except BaseException:
-        dir_now=dir_now[:-1]+"/"
-        model_path = dir_now + r'zfgetcode/data/model'
-        for filename in os.listdir(model_path):
-            model = Image.open(model_path + "/" + filename)
-            file_names.append(filename[0:1])
-            models.append(model.convert('L'))
-
-    # 分别识别切割的单子字符
-    for image in images:
-        result += (single_char_ocr(image, models, file_names))
-    return result
+    
+    model_path = os.path.join(dir_now, 'zfgetcode/data/model')
+    for filename in os.listdir(model_path):
+        model = Image.open(os.path.join(model_path, filename)).convert('L')
+        file_names.append(filename[0:1])
+        models.append(np.array(model))
+    
+    return models, file_names
 
 
 def single_char_ocr(image, models, file_names):
-    # 识别一个字符
     result = "#"
-    height = image.size[0]
-    width = image.size[1]
-    min_count = width * height
-    for i in range(len(models)):
-        model = models[i]
-        if model.size[1] - width > 2:
-            print("OCR_CODE.py--71")
-            continue
-        count = 0
-        width_min = width if width < model.size[1] else model.size[1]
-        height_min = height if width < model.size[0] else model.size[0]
-        for y in range(width_min):
-            done = False
-            for x in range(height_min):
-                if model.getpixel((x, y)) != image.getpixel((x, y)):
-                    count += 1
-                    if count >= min_count:
-                        done = True
-                        break
-            if done:
-                break
-        if count <= 3:
-            result = file_names[i]
-            print(result)
-        elif count < min_count:
-            min_count = count
-            result = file_names[i]
-    return result
+    image_array = np.array(image)
 
+    min_count = image.size[0] * image.size[1]
+    best_match = None
+
+    for i, model in enumerate(models):
+        if model.shape[1] != image_array.shape[1]:
+            continue
+
+        # 计算差异度，使用 NumPy 高效计算
+        diff = np.abs(image_array - model)
+        count = np.sum(diff > 0)
+
+        if count < min_count:
+            min_count = count
+            best_match = file_names[i]
+
+    return best_match if best_match else result
+
+
+def ocr(images, models, file_names):
+    with ThreadPoolExecutor() as executor:
+        results = list(executor.map(lambda image: single_char_ocr(image, models, file_names), images))
+    return "".join(results)
 
 def run(image_path, dir_now):
-    image = Image.open(image_path + "code.jpg")
-    # show_code(image)
+    image = Image.open(os.path.join(image_path, "code.jpg"))
     image = stay_blue2gray(image)
     images = split_image(image)
-    result = ocr(images, dir_now)
-    # print(result)
+    models, file_names = load_models(dir_now)
+    result = ocr(images, models, file_names)
     return result
 
 
 if __name__ == "__main__":
-    print(run(os.getcwd() + "/",os.getcwd() + "/"))
+    result = run(os.getcwd(), os.getcwd())
+    print(result)
