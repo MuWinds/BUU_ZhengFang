@@ -6,6 +6,7 @@ import OCR_CODE
 from bs4 import BeautifulSoup
 import requests
 import RW_ACCOUNT
+import time
 import rsa
 
 # zucc正方教务系统需要用到的一些网站连接以及初始化的抢课数据包
