@@ -10,11 +10,12 @@ import time
 
 
 def begin_catch_course():
+    #修改一下提示
     catch_course_dic = {
-        "1": "计划内选课",
-        "2": "英语拓展课",
-        "3": "跨专业选课",
-        "4": "公选课",
+        "1": "培养方案选课",
+        "2": "英语拓展课(已废弃)",
+        "3": "跨专业选课(已废弃)",
+        "4": "通识教育选修（校选）课",
         "0": "返回主菜单"
     }
     catch_course_menu = MENU.MENU(catch_course_dic)
