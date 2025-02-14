@@ -6,7 +6,6 @@ import CATCH_PLANNED_COURSE as plan
 import CATCH_OUTPLANNED_COURSE as outplan
 import CATCH_ENGLISH_COURSE as eng
 import LOGIN
-import time
 
 
 def begin_catch_course():
