@@ -1,6 +1,7 @@
 beautifulsoup4==4.12.3
-numba==0.60.0
-numpy==2.2.1
+numba
+numpy
 Pillow==11.1.0
 Requests==2.32.3
 rsa==4.9
+lxml

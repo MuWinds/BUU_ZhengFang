@@ -8,26 +8,22 @@ from concurrent.futures import ThreadPoolExecutor
 def stay_blue2gray(image):
     image = image.convert('RGB')
     img_array = np.array(image)
-    
-    # 分步计算条件以减少重复操作
-    r = img_array[:, :, 0]
-    g = img_array[:, :, 1]
-    b = img_array[:, :, 2]
-    
-    mask = (r <= 40) & (g <= 40) & (b >= 65)
-    img_array[mask] = [0, 0, 0]
-    img_array[~mask] = [255, 255, 255]
+    # Optimized masking using NumPy vectorized operations
+    # Relaxed blue mask to preserve more details
+    blue_mask = (img_array[:, :, 0] <= 50) & (img_array[:, :, 1] <= 50) & (img_array[:, :, 2] >= 65)
+    img_array[blue_mask] = [0, 0, 0]
+    img_array[~blue_mask] = [255, 255, 255]
     return Image.fromarray(np.uint8(img_array)).convert('L')
 
 def split_image(image):
     images = []
     x, y, w, h = 5, 0, 12, 23
-    for i in range(4):
+    for _ in range(4): # changed to _ since i is not used
         images.append(image.crop((x, y, x + w, y + h)))
         x += w
     return images
 
-@njit
+@njit(nogil=True, cache=True)
 def calculate_diff(image_array, model):
     diff = np.bitwise_xor(image_array, model)
     return np.sum(diff)
@@ -39,8 +35,8 @@ def load_models(dir_now):
     for filename in os.listdir(model_path):
         model = Image.open(os.path.join(model_path, filename)).convert('L')
         file_names.append(filename[0:1])
-        models.append(np.array(model))
-    
+        # Pre-binarize models here and convert to uint8 for memory efficiency
+        models.append((np.array(model) > 128).astype(np.uint8))
     return models, file_names
 
 def load_models_cached(dir_now, cache_file="models_cache.pkl"):
@@ -78,6 +74,7 @@ def run(image_path, dir_now):
     images = split_image(image)
     models, file_names = load_models_cached(dir_now)
     result = ocr(images, models, file_names)
+    print(result)
     return result
 
 if __name__ == "__main__":

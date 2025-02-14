@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import binascii
+import time
 import os
 import sys
 import OCR_CODE
@@ -94,7 +95,7 @@ class Account:
         # print("passwd:"passwd)
         passwd = binascii.b2a_hex(passwd).decode('ascii')
         self.POSTDate["TextBox2"] = passwd
-
+        ocr_start_time = time.time()
         self.__get_check_code_ocr()
         print("##POST login")
         try_time = 0
