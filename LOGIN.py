@@ -14,7 +14,7 @@ class ZUCC:
     DOMAIN = "jwxt.buu.edu.cn"
     MainURL = "https://jwxt.buu.edu.cn/default2.aspx"
     InitHeader = {"Host": "jwxt.buu.edu.cn", "Connection": "keep-alive",
-                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"}
+                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63090c11) XWEB/11581 Flue"}
     CheckCodeURL = "https://jwxt.buu.edu.cn/"
     CheckCodeHeader = ""
     PlanCourageURL = "https://jwxt.buu.edu.cn/xsxk.aspx"
