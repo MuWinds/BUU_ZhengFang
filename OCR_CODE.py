@@ -4,6 +4,7 @@ from PIL import Image
 import pickle
 from numba import njit
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 def stay_blue2gray(image):
     image = image.convert('RGB')
@@ -69,12 +70,14 @@ def ocr(images, models, file_names):
     return "".join(results)
 
 def run(image_path, dir_now):
+    run_before = time.time()
     image = Image.open(os.path.join(image_path, "code.jpg"))
     image = stay_blue2gray(image)
     images = split_image(image)
     models, file_names = load_models_cached(dir_now)
     result = ocr(images, models, file_names)
     print(result)
+    print("耗时：",time.time()-run_before,"s")
     return result
 
 if __name__ == "__main__":

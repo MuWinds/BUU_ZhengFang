@@ -6,7 +6,8 @@ import CATCH_PLANNED_COURSE as plan
 import CATCH_OUTPLANNED_COURSE as outplan
 import CATCH_ENGLISH_COURSE as eng
 import LOGIN
-
+import os
+import OCR_CODE
 
 def begin_catch_course():
     #修改一下提示
@@ -44,6 +45,15 @@ def begin_catch_course():
 
 
 if __name__ == "__main__":
+    print("OCR预热中")
+    try:
+        with open(os.getcwd() + "/code.jpg", "r") as code_jpg:
+            img_dir = os.getcwd() + "/"
+        code_jpg.close()
+    except IOError:
+        print("IO ERROR!")
+    OCR_CODE.run(img_dir, dir_now=img_dir)
+    print("OCR预热完成")
     print("\033[1;36m       欢迎来到正方教务系统抢课助手\033[0m\n本程序主要自动登录+爬取课程信息+发送选课数据包进行抢课"
           "\n\033[1;31m第一次运行时记得先设置账号密码,之后运行就不需要设置了(存放在account.json中哦~)\033[0m")
     init_dic = {
